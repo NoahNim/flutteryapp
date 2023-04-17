@@ -45,6 +45,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) { // Every widget defines a build() method that's automatically called every time the widgets circumstances change so that the widget is always up to date.
     var appState = context.watch<MyAppState>(); // The widget tracks changes to the app's current state using the watch method
+    var pair = appState.current; // Extracts appState.current into a seperate widget
 
 
   // Every build method must return a widget or (more typically) a series of widgets.
@@ -52,7 +53,7 @@ class MyHomePage extends StatelessWidget {
       body: Column( // Column is one of the most basic layouts of Flutter. It takes any number of children and puts them in a columb from top to bottom. By default the column visually places its children at the top.
         children: [
           Text('A random AWESOME idea:'), // Text is well....text
-          Text(appState.current.asLowerCase), // The second text takes the appState and accesses only a member of that class, current (which in this case is WordPair). WordPair provides several helpful getters, such as asPascalCase or asSnakeCase or in this case asLowerCase
+          Text(pair.asLowerCase), // The second text takes the appState via the pair widget/variable and accesses only a member of that class, current (which in this case is WordPair). WordPair provides several helpful getters, such as asPascalCase or asSnakeCase or in this case asLowerCase
 
           // Button
           ElevatedButton(
