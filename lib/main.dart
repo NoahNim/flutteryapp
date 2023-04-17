@@ -39,13 +39,15 @@ class MyAppState extends ChangeNotifier { // This defines the apps state. MyAppS
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) { // Every widget defines a build() method that's automatically called every time the widgets circumstances change so that the widget is always up to date.
-    var appState = context.watch<MyAppState>();
+    var appState = context.watch<MyAppState>(); // The widget tracks changes to the app's current state using the watch method
 
+
+  // Every build method must return a widget or (more typically) a series of widgets.
     return Scaffold(
-      body: Column(
+      body: Column( // Column is one of the most basic layouts of Flutter. It takes any number of children and puts them in a columb from top to bottom. By default the column visually places its children at the top.
         children: [
-          Text('A random AWESOME idea:'),
-          Text(appState.current.asLowerCase),
+          Text('A random AWESOME idea:'), // Text is well....text
+          Text(appState.current.asLowerCase), // The second text takes the appState and accesses only a member of that class, current (which in this case is WordPair). WordPair provides several helpful getters, such as asPascalCase or asSnakeCase or in this case asLowerCase
 
           // Button
           ElevatedButton(
