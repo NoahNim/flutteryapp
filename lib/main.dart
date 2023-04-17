@@ -29,6 +29,11 @@ class MyApp extends StatelessWidget { // The myApp class extends StateLessWidget
 
 class MyAppState extends ChangeNotifier { // This defines the apps state. MyAppState defines the data the app needs to function. It extends the ChangeNotifier class, which means it can notify other widgets about state changes.
   var current = WordPair.random(); 
+
+  void getNext() { // resassigns current with a new random WordPair. 
+    current = WordPair.random(); 
+    notifyListeners(); // calls notifyListeners (a method of ChangeNotifierProvider) to ensure anything watching MyAppState is notified
+  }
 } // The state is created and provided using a ChangeNotifierProvider
 //            My App
 //              |
@@ -52,7 +57,7 @@ class MyHomePage extends StatelessWidget {
           // Button
           ElevatedButton(
             onPressed: () {
-              print('button pressed');
+              appState.getNext(); //Calls the getNext method in appState
             },
             child: Text('Next')
           ),
