@@ -51,11 +51,121 @@ class MyAppState extends ChangeNotifier { // This defines the apps state. MyAppS
 //            /        \
 //        Some Widget  Other Widgets
 
-class MyHomePage extends StatelessWidget {
+// class MyHomePage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) { // Every widget defines a build() method that's automatically called every time the widgets circumstances change so that the widget is always up to date.
+//     var appState = context.watch<MyAppState>(); // The widget tracks changes to the app's current state using the watch method
+//     var pair = appState.current; // Extracts appState.current into a seperate widget
+
+//     IconData icon;
+//     if (appState.favorites.contains(pair)) {
+//       icon = Icons.favorite;
+//     } else {
+//       icon = Icons.favorite_border;
+//     }
+
+  // Every build method must return a widget or (more typically) a series of widgets.
+//     return Scaffold(
+//       body: Center( // centers the column
+//         child: Column( // Column is one of the most basic layouts of Flutter. It takes any number of children and puts them in a columb from top to bottom. By default the column visually places its children at the top.
+//           mainAxisAlignment: MainAxisAlignment.center, // aligns the children of Column on its vertical/main axis
+//           children: [
+//            // Text('A random AWESOME idea:'), Text is well....text
+//             BigCard(pair: pair), // The second text takes the appState via the pair widget/variable and accesses only a member of that class, current (which in this case is WordPair). WordPair provides several helpful getters, such as asPascalCase or asSnakeCase or in this case asLowerCase
+//             SizedBox(height: 10), // adds seperation between widgets
+//             // Button
+//             Row(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 ElevatedButton.icon(onPressed: () {
+//                   appState.toggleFavorite();
+//                 },
+//                   icon: Icon(icon), 
+//                   label: Text("Like"),
+                  
+//                 ),
+//                 ElevatedButton(
+//                   onPressed: () {
+//                     appState.getNext(); //Calls the getNext method in appState
+//                   },
+//                   child: Text('Next')
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+class MyHomePage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) { // Every widget defines a build() method that's automatically called every time the widgets circumstances change so that the widget is always up to date.
-    var appState = context.watch<MyAppState>(); // The widget tracks changes to the app's current state using the watch method
-    var pair = appState.current; // Extracts appState.current into a seperate widget
+  State<MyHomePage> createState() => _MyHomePageState(); // Turn home page into a widget with its own state
+}
+
+class _MyHomePageState extends State<MyHomePage> { // 
+  var selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget page; // widget variable for the page being displayed
+    switch (selectedIndex) { // switch statement to change page widget
+      case 0:
+        page = GeneratorPage();
+        break;
+      case 1: 
+        page = Placeholder();
+        break;
+      default:  
+        throw UnimplementedError('no widget for $selectedIndex');
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scaffold(
+          body: Row(
+            children: [
+              SafeArea(
+                child: NavigationRail(
+                  extended: constraints.maxWidth >= 600,
+                  destinations: [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.favorite),
+                      label: Text('Favorites'),
+                    ),
+                  ],
+                  selectedIndex: 0,
+                  onDestinationSelected: (value) {
+                    setState(() {
+                      selectedIndex = value;
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  child: page,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    );
+  }
+}
+
+class GeneratorPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var pair = appState.current;
 
     IconData icon;
     if (appState.favorites.contains(pair)) {
@@ -64,40 +174,37 @@ class MyHomePage extends StatelessWidget {
       icon = Icons.favorite_border;
     }
 
-  // Every build method must return a widget or (more typically) a series of widgets.
-    return Scaffold(
-      body: Center( // centers the column
-        child: Column( // Column is one of the most basic layouts of Flutter. It takes any number of children and puts them in a columb from top to bottom. By default the column visually places its children at the top.
-          mainAxisAlignment: MainAxisAlignment.center, // aligns the children of Column on its vertical/main axis
-          children: [
-           // Text('A random AWESOME idea:'), Text is well....text
-            BigCard(pair: pair), // The second text takes the appState via the pair widget/variable and accesses only a member of that class, current (which in this case is WordPair). WordPair provides several helpful getters, such as asPascalCase or asSnakeCase or in this case asLowerCase
-            SizedBox(height: 10), // adds seperation between widgets
-            // Button
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton.icon(onPressed: () {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BigCard(pair: pair),
+          SizedBox(height: 10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
                   appState.toggleFavorite();
                 },
-                  icon: Icon(icon), 
-                  label: Text("Like"),
-                  
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    appState.getNext(); //Calls the getNext method in appState
-                  },
-                  child: Text('Next')
-                ),
-              ],
-            ),
-          ],
-        ),
+                icon: Icon(icon),
+                label: Text('Like'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  appState.getNext();
+                },
+                child: Text('Next'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
+
 
 class BigCard extends StatelessWidget {
   const BigCard({
