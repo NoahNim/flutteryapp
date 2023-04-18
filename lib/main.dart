@@ -34,6 +34,16 @@ class MyAppState extends ChangeNotifier { // This defines the apps state. MyAppS
     current = WordPair.random(); 
     notifyListeners(); // calls notifyListeners (a method of ChangeNotifierProvider) to ensure anything watching MyAppState is notified
   }
+
+  var favorites = <WordPair>[]; // empty list that expects WordPair type/class 
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+    } else {
+      favorites.add(current);
+    }
+    notifyListeners();
+  }
 } // The state is created and provided using a ChangeNotifierProvider
 //            My App
 //              |
@@ -47,6 +57,12 @@ class MyHomePage extends StatelessWidget {
     var appState = context.watch<MyAppState>(); // The widget tracks changes to the app's current state using the watch method
     var pair = appState.current; // Extracts appState.current into a seperate widget
 
+    IconData icon;
+    if (appState.favorites.contains(pair)) {
+      icon = Icons.favorite;
+    } else {
+      icon = Icons.favorite_border;
+    }
 
   // Every build method must return a widget or (more typically) a series of widgets.
     return Scaffold(
@@ -58,11 +74,23 @@ class MyHomePage extends StatelessWidget {
             BigCard(pair: pair), // The second text takes the appState via the pair widget/variable and accesses only a member of that class, current (which in this case is WordPair). WordPair provides several helpful getters, such as asPascalCase or asSnakeCase or in this case asLowerCase
             SizedBox(height: 10), // adds seperation between widgets
             // Button
-            ElevatedButton(
-              onPressed: () {
-                appState.getNext(); //Calls the getNext method in appState
-              },
-              child: Text('Next')
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(onPressed: () {
+                  appState.toggleFavorite();
+                },
+                  icon: Icon(icon), 
+                  label: Text("Like"),
+                  
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    appState.getNext(); //Calls the getNext method in appState
+                  },
+                  child: Text('Next')
+                ),
+              ],
             ),
           ],
         ),
